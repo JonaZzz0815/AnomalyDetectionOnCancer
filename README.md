@@ -6,3 +6,4 @@ https://github.com/GuansongPang/ADRepository-Anomaly-detection-datasets
   
 ## Resources:
 https://github.com/yzhao062/anomaly-detection-resources  
+case with AE: http://sofasofa.io/tutorials/anomaly_detection/  
