@@ -6,4 +6,5 @@ https://github.com/GuansongPang/ADRepository-Anomaly-detection-datasets
   
 ## Resources:
 https://github.com/yzhao062/anomaly-detection-resources  
+ViT: https://github.com/lucidrains/vit-pytorch#masked-autoencoder  
 case with AE: http://sofasofa.io/tutorials/anomaly_detection/  
