@@ -17,3 +17,6 @@ Deep Anomaly Detection with Deviation Networks:https://arxiv.org/pdf/1911.08623v
 code:https://paperswithcode.com/paper/deep-anomaly-detection-with-deviation
 ## other resource（maybe usefull when writing report
 cs229 course page: http://cs229.stanford.edu/proj2021spr/
+  
+### Theme: Semi-supervised anomaly detection with Deep Clustering In AutoEncoder.  
+Our Method: (To Be Make.)
