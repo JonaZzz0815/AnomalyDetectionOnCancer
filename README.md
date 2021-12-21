@@ -10,5 +10,7 @@ ViT: https://github.com/lucidrains/vit-pytorch#masked-autoencoder
 case with AE: http://sofasofa.io/tutorials/anomaly_detection/  
 
 ## Paper with code 
-anomaly detextion cifar
-https://paperswithcode.com/sota/anomaly-detection-on-one-class-cifar-10
+anomaly detextion cifar：https://paperswithcode.com/sota/anomaly-detection-on-one-class-cifar-10
+
+## other resource（maybe usefull when writing report
+cs229 course page: http://cs229.stanford.edu/proj2021spr/
