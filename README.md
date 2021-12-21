@@ -19,4 +19,4 @@ code:https://paperswithcode.com/paper/deep-anomaly-detection-with-deviation
 cs229 course page: http://cs229.stanford.edu/proj2021spr/
   
 ### Theme: Semi-supervised anomaly detection with Deep Clustering In AutoEncoder.  
-Our Method: (To Be Make.)
+Our Method: (To Be Made.)
