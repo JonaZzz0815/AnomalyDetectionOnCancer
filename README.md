@@ -23,7 +23,8 @@ cs229 course page: http://cs229.stanford.edu/proj2021spr/
 Our Method:  
 1. Adaptive sampling. 
 2. Dropout / random ensemble. 
+    1. dropout refer to: https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf
 3. MAE+k-means. 
 4. Layer-wise pre-training. 
     1. pre-training refer to: https://zhangkaifang.blog.csdn.net/article/details/89320108?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link. 
-6. loss=重构loss+聚类loss（k-means). 
+5. loss=重构loss+聚类loss（k-means). 
