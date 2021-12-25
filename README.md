@@ -24,9 +24,9 @@ Our Method:
 1. Adaptive sampling. 
 2. Dropout / random ensemble. 
     1. dropout refer to: https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf
-3. MAE+k-means. 
-    1. MAE self-supervision pretraining： 别再无聊地吹捧了，一起来动手实现 MAE(Masked Autoencoders Are Scalable Vision Learners) 玩玩吧！ - CW不要無聊的風格的文章 - 知乎
-https://zhuanlan.zhihu.com/p/439554945  
-4. Layer-wise pre-training. 
+3. (M)AE+k-means. 
+4. pre-training. 
     1. pre-training refer to: https://zhangkaifang.blog.csdn.net/article/details/89320108?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link. 
+    2. MAE self-supervision pretraining： 别再无聊地吹捧了，一起来动手实现 MAE(Masked Autoencoders Are Scalable Vision Learners) 玩玩吧！ - CW不要無聊的風格的文章 - 知乎
+https://zhuanlan.zhihu.com/p/439554945  
 5. loss=重构loss+聚类loss（k-means). 
