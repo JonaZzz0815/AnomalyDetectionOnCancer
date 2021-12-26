@@ -1,4 +1,4 @@
-# Outlier Detection On Cancer
+# Outlier Detection On COVID-19
 ## Possible dataset:
 https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)  
 corresponding code :https://github.com/AFAgarap/wisconsin-breast-cancer  
