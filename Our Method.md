@@ -12,6 +12,6 @@ loss function = reconstruction loss + clustering loss.
 ### pre-training data: (the third dataset is enough.)
 1. https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia. 
 2. head CT: https://www.kaggle.com/felipekitamura/head-ct-hemorrhage.  
-3. COVID-19：https://www.kaggle.com/mohammadrahimzadeh/covidctset-a-large-covid19-ct-scans-dataset (fold 1,2,3)
+3. COVID-19：https://www.kaggle.com/mohammadrahimzadeh/covidctset-a-large-covid19-ct-scans-dataset (all)
 ### downstream data: (the first dataset is enough.)
-1. COVID-19：https://www.kaggle.com/mohammadrahimzadeh/covidctset-a-large-covid19-ct-scans-dataset (fold 4,5)
+1. COVID-CT: https://github.com/UCSD-AI4H/COVID-CT. 
