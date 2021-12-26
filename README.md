@@ -7,7 +7,7 @@ https://github.com/GuansongPang/ADRepository-Anomaly-detection-datasets
   
 ## Resources:
 https://github.com/yzhao062/anomaly-detection-resources  
-ViT: https://github.com/lucidrains/vit-pytorch#masked-autoencoder  
+ViT: https://github.com/lucidrains/vit-pytorch
 case with AE: http://sofasofa.io/tutorials/anomaly_detection/  
 case with AE: 自编码器AutoEncoder解决异常检测问题（手把手写代码） - 数据如琥珀的文章 - 知乎 https://zhuanlan.zhihu.com/p/260882741  
 
