@@ -15,3 +15,4 @@ loss function = reconstruction loss + clustering loss.
 3. COVID-19：https://www.kaggle.com/mohammadrahimzadeh/covidctset-a-large-covid19-ct-scans-dataset (all)
 ### downstream data: (the first dataset is enough.)
 1. COVID-CT: https://github.com/UCSD-AI4H/COVID-CT. 
+    - more data split information: https://github.com/UCSD-AI4H/COVID-CT/tree/master/baseline%20methods/DenseNet169#dataset-distribution  
