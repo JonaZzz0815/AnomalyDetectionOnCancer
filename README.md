@@ -30,3 +30,7 @@ Our Method:
     2. MAE self-supervision pretraining： 别再无聊地吹捧了，一起来动手实现 MAE(Masked Autoencoders Are Scalable Vision Learners) 玩玩吧！ - CW不要無聊的風格的文章 - 知乎
 https://zhuanlan.zhihu.com/p/439554945  
 5. loss=重构loss+聚类loss（k-means). 
+### How to run
+cd MAE
+python pretain.py
+python xxtrain.py
