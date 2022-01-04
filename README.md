@@ -31,6 +31,6 @@ Our Method:
 https://zhuanlan.zhihu.com/p/439554945  
 5. loss=重构loss+聚类loss（k-means). 
 ### How to run
-cd MAE
-python pretain.py
-python xxtrain.py
+cd MAE  
+python pretain.py  
+python xxtrain.py  
