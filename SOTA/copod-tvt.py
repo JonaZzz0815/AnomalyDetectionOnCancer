@@ -1,10 +1,16 @@
-from LoadDownstreamData import path
-from LoadDownstreamData import train_x,train_y
-from LoadDownstreamData import val_x,val_y
-from LoadDownstreamData import test_x,test_y
+import os
+import sys 
+sys.path.append("..") 
+from LoadDownstreamData import GetTestSet,GetValSet,GetTrainSet
 from pyod.models.copod import COPOD
 from sklearn.metrics import roc_auc_score,roc_curve,auc
 import pickle
+path = os.path.abspath(os.path.dirname(os.getcwd()))
+
+train_x,train_y = GetTrainSet(path)
+val_x,val_y = GetValSet(path)
+test_x,test_y = GetTestSet(path)
+
 epoch = 1
 clf_name = 'copod'
 clf = COPOD()

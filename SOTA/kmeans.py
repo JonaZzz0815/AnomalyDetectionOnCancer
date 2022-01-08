@@ -1,10 +1,18 @@
-from LoadDownstreamData import path
-from LoadDownstreamData import train_x,train_y
-from LoadDownstreamData import val_x,val_y
-from LoadDownstreamData import test_x,test_y
+import os
+import sys 
+sys.path.append("..") 
+from LoadDownstreamData import GetTestSet,GetValSet,GetTrainSet
+
 from sklearn.cluster import KMeans
 from sklearn.metrics import roc_auc_score,roc_curve,auc
 import pickle
+
+path = os.path.abspath(os.path.dirname(os.getcwd()))
+
+train_x,train_y = GetTrainSet(path)
+val_x,val_y = GetValSet(path)
+test_x,test_y = GetTestSet(path)
+
 epoch = 5
 clf = KMeans(n_clusters=2,
                 init='k-means++',
