@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-01-01 15:48:27
-LastEditTime: 2022-01-02 23:10:26
+LastEditTime: 2022-01-08 16:24:12
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: /AnomalyDetectionOnCancer/MAE/pretrain.py
@@ -30,6 +30,8 @@ if __name__ == '__main__':
     parser.add_argument('--total_epoch', type=int, default=2000)
     parser.add_argument('--warmup_epoch', type=int, default=200)
     parser.add_argument('--model_path', type=str, default='vit-t-mae.pt')
+    parser.add_argument('--pretrain', type=str, default='Full')
+
 
     args = parser.parse_args()
 
@@ -41,8 +43,9 @@ if __name__ == '__main__':
     assert batch_size % load_batch_size == 0
     steps_per_update = batch_size // load_batch_size
     path = os.path.abspath(os.path.dirname(os.getcwd()))
-    train_dataset = GetTrainSet(path)
-    val_dataset = GetValSet(path,True)
+    type_dataset = args.pretrain 
+    train_dataset = GetTrainSet(path,type_dataset)
+    val_dataset = GetValSet(path,type_dataset)
     # train_dataset = torchvision.datasets.CIFAR10('data', train=True, download=True, transform=Compose([ToTensor(), Normalize(0.5, 0.5)]))
     # val_dataset = torchvision.datasets.CIFAR10('data', train=False, download=True, transform=Compose([ToTensor(), Normalize(0.5, 0.5)]))
     dataloader = torch.utils.data.DataLoader(train_dataset, load_batch_size, shuffle=True, num_workers=4)

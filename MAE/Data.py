@@ -36,7 +36,7 @@ seed = 2020
 np.random.seed(seed)
 # root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
 class CovidCTDataset(Dataset):
-    def __init__(self, root_dir, txt_COVID, txt_NonCOVID, transform=None,only = False):
+    def __init__(self, root_dir, txt_COVID, txt_NonCOVID, transform=None,only = 0,Test = False):
         """
         Args:
             txt_path (string): Path to the txt file with annotations.
@@ -56,14 +56,23 @@ class CovidCTDataset(Dataset):
         """
         self.root_dir = root_dir
         self.txt_path = [txt_COVID, txt_NonCOVID]
-        self.classes = ['CT_COVID', 'CT_NonCOVID']
-        if only == True:
-            self.num_cls = 1
-        else:# normal case
-            self.num_cls = len(self.classes)
+        if only == 0:
+            self.classes = ['CT_COVID', 'CT_NonCOVID']
+            self.txt_path = [txt_COVID, txt_NonCOVID]
+        elif only == 1:# only CT_COVID
+            self.classes = ['CT_COVID']
+            self.txt_path = [txt_COVID]
+        elif only == 2:# only CT_NonCOVID
+            self.classes = ['CT_NonCOVID']
+            self.txt_path = [txt_NonCOVID]
+
         self.img_list = []
+        self.num_cls = len (self.classes)
         for c in range(self.num_cls):
             cls_list = [[os.path.join(self.root_dir+'/COVID-CT', self.classes[c], item), c] for item in read_txt(self.txt_path[c])]
+            if Test == True:
+                if self.classes[c] == 'CT_COVID':
+                    cls_list = cls_list[0:20]
             self.img_list += cls_list
         self.transform = transform
 
@@ -84,14 +93,26 @@ class CovidCTDataset(Dataset):
         return image, int(self.img_list[idx][1])
 
 
-def GetTrainSet(path):
+def GetTrainSet(path,type = "Full"):
+    if type == "NonCOVID":
+        only = 2
+    elif type == "COVID":
+        only = 1
+    elif type == "Full":
+        only = 0
     trainset = CovidCTDataset(root_dir=path,
       txt_COVID=path+'/COVID-CT/datasplit/COVID/trainCT_COVID.txt',
       txt_NonCOVID=path+'/COVID-CT/datasplit/NonCOVID/trainCT_NonCOVID.txt',
-      transform= train_transformer,only = True)
+      transform= train_transformer,only = only)
     return trainset
 
-def GetValSet(path,only):
+def GetValSet(path,type = "Full"):
+    if type == "NonCOVID":
+        only = 2
+    elif type == "COVID":
+        only = 1
+    elif type == "Full":
+        only = 0
     valset = CovidCTDataset(root_dir=path,
       txt_COVID=path+'/COVID-CT/datasplit/COVID/valCT_COVID.txt',
       txt_NonCOVID=path+'/COVID-CT/datasplit/NonCOVID/valCT_NonCOVID.txt',
@@ -103,5 +124,6 @@ def GetTestSet(path):
     testset = CovidCTDataset(root_dir=path,
       txt_COVID=path+'/COVID-CT/datasplit/COVID/testCT_COVID.txt',
       txt_NonCOVID=path+'/COVID-CT/datasplit/NonCOVID/testCT_NonCOVID.txt',
-      transform= val_transformer)
+      transform= val_transformer,
+      Test=True)
     return testset

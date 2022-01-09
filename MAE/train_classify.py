@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 from Data import *
 from model import *
-from utils import setup_seed
+from utils import setup_seed,measure
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--warmup_epoch', type=int, default=5)
     parser.add_argument('--pretrained_model_path', type=str, default='vit-t-mae.pt')
     parser.add_argument('--output_model_path', type=str, default='vit-t-classifier-from_scratch.pt')
+    parser.add_argument('--pretrain', type=str, default='Full')
 
     args = parser.parse_args()
 
@@ -34,8 +35,9 @@ if __name__ == '__main__':
     steps_per_update = batch_size // load_batch_size
 
     path = os.path.abspath(os.path.dirname(os.getcwd()))
-    train_dataset = GetTrainSet(path)
-    val_dataset = GetValSet(path,True)
+    type_dataset = args.pretrain 
+    train_dataset = GetTrainSet(path,type_dataset)
+    val_dataset = GetValSet(path,type_dataset)
 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, load_batch_size, shuffle=True, num_workers=4)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, load_batch_size, shuffle=False, num_workers=4)
@@ -104,3 +106,22 @@ if __name__ == '__main__':
 
         writer.add_scalars('cls/loss', {'train' : avg_train_loss, 'val' : avg_val_loss}, global_step=e)
         writer.add_scalars('cls/acc', {'train' : avg_train_acc, 'val' : avg_val_acc}, global_step=e)
+
+
+print("Final test:")
+test_dataset = GetTestSet(path)
+test_dataloader = torch.utils.data.DataLoader(test_dataset, load_batch_size, shuffle=False, num_workers=4)
+
+with torch.no_grad():
+    predicts = []
+    labels = []
+    for img, label in tqdm(iter(test_dataloader)):
+        img = img.to(device)
+        label = label.to(device)
+        logits = model(img)
+        predicts+=(logits.argmax(dim=-1)).tolist()
+        labels+=label.tolist()
+    acc,f1,auc_score = measure(torch.tensor(predicts),torch.tensor(labels))
+
+print(f'Test set:acc:{acc},f1_score:{f1},auc_score:{auc_score}')
+    

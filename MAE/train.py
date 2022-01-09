@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-01-03 15:38:00
-LastEditTime: 2022-01-03 20:07:56
+LastEditTime: 2022-01-09 11:24:06
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: /AnomalyDetectionOnCancer/MAE/train.py
@@ -11,6 +11,9 @@ import argparse
 import math
 import torch
 import torchvision
+import pandas as pd
+from sklearn.metrics import f1_score, auc 
+
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.transforms import ToTensor, Compose, Normalize
 from tqdm import tqdm
@@ -22,13 +25,17 @@ def CalAcc(losses,labels):
     lb = min(losses)
     hb = max(losses)
     max_acc = 0
+    max_f1 = 0
+    max_auc = 0
     for t in torch.arange(lb,hb,0.001):
         given_label = losses < t
         acc = (given_label == labels).sum() / float(len (labels))
         if (acc > max_acc):
             max_acc = acc
+            max_f1 = f1_score(labels,given_label)
+            max_auc = auc(labels,given_label)
     
-    return max_acc;
+    return max_acc,max_f1,max_auc
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=42)
@@ -40,6 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--warmup_epoch', type=int, default=5)
     parser.add_argument('--pretrained_model_path', type=str, default='vit-t-mae.pt')
     parser.add_argument('--output_model_path', type=str, default='vit-t-classifier-from_scratch.pt')
+    parser.add_argument('--pretrain', type=str, default='Full')
 
     args = parser.parse_args()
 
@@ -52,7 +60,9 @@ if __name__ == '__main__':
     steps_per_update = batch_size // load_batch_size
 
     path = os.path.abspath(os.path.dirname(os.getcwd()))
-    train_dataset = GetTrainSet(path)
+    type_dataset = args.pretrain 
+
+    train_dataset = GetTrainSet(path,type_dataset)
     test_dataset = GetTestSet(path)
 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, load_batch_size, shuffle=True, num_workers=4)
@@ -82,18 +92,43 @@ if __name__ == '__main__':
     with torch.no_grad():
         losses = []
         acces = []
-        labels=np.asarray([test_dataset[i][1] for i in range(len(test_dataset))])
-        labels = torch.tensor(labels)
+        ori_labels=np.asarray([test_dataset[i][1] for i in range(len(test_dataset))])
+        ori_labels = torch.tensor(ori_labels)
         test_img = torch.stack([test_dataset[i][0] for i in range(len(test_dataset))])
-        print(len(test_img))
-        
         img = test_img.to(device)
         predicted_img, mask = model(img)
         predicted_img = predicted_img * mask + img * (1 - mask)
         loss1 = (predicted_img - img) ** 2 * mask / 0.75
-        loss = torch.tensor([torch.mean(item) for item in loss1])
-        print(loss)
-        acc = CalAcc(loss,labels)
-        print(acc)
-        
+        loss = torch.tensor([torch.mean(torch.pow(item,2)) for item in loss1])
+        # print(loss)
+        acc,f1,auc_score = CalAcc(loss,ori_labels)
+        print(f'Acc is {acc},F1_score:{f1},auc:{auc_score}')
+    
+markers = ['o', '^']
+colors = ['dodgerblue', 'coral']
+labels = ['COVID','NonCOVID']
+
+
+
+
+mse_df = pd.DataFrame()
+mse_df['Class'] = ori_labels
+mse_df['MSE'] = loss
+
+plt.figure(figsize=(14, 5))
+plt.subplot(1,1,1)
+for flag in [1, 0]:
+    temp = mse_df[mse_df['Class'] == flag]
+    plt.scatter(temp.index, 
+                temp['MSE'],  
+                alpha=0.7, 
+                marker=markers[flag], 
+                c=colors[flag], 
+                label=labels[flag])
+plt.title('Reconstruction MSE')
+plt.legend(loc=[1, 0], fontsize=12)
+plt.ylabel('Reconstruction MSE'); plt.xlabel('Index')
+plt.subplot(1,1,1)
+plt.show()
+
         
