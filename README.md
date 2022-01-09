@@ -34,3 +34,8 @@ https://zhuanlan.zhihu.com/p/439554945
 cd MAE  
 python pretain.py  
 python xxtrain.py  
+
+### Result
+| Name     | Accuracy | PR          | ROC         |
+| -------- | -------- | ----------- | ----------- |
+|          |          |             |             |
