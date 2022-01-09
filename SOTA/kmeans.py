@@ -1,23 +1,19 @@
-import os
-import sys 
-sys.path.append("..") 
-from LoadDownstreamData import GetTestSet,GetValSet,GetTrainSet
-
+from LoadDownstreamData import GetTrainSet,GetValSet,GetTestSet
 from sklearn.cluster import KMeans
-from sklearn.metrics import roc_auc_score,roc_curve,auc
-import pickle
+from sklearn.metrics import roc_curve,auc,accuracy_score,precision_recall_curve
+import pickle,os
 
-path = os.path.abspath(os.path.dirname(os.getcwd()))
+path0 =os.path.abspath('..')
+path = os.getcwd()
 
-train_x,train_y = GetTrainSet(path)
-val_x,val_y = GetValSet(path)
-test_x,test_y = GetTestSet(path)
-
-epoch = 5
+train_x, train_y = GetTrainSet(path0)
+test_x, test_y  = GetTestSet(path0)
+test_y.tolist()
+epoch = 10
 clf = KMeans(n_clusters=2,
                 init='k-means++',
                 n_init=10,
-                max_iter=300,
+                max_iter=1000,
                 tol=0.0001,
                 random_state=None,
                 copy_x=True,
@@ -25,21 +21,33 @@ clf = KMeans(n_clusters=2,
                 )
 
 for i in range(epoch):
-    clf.fit(train_x)
-    y_train_pred = clf.labels_
-    fpr, tpr, thersholds = roc_curve(train_y,y_train_pred)
+    y_pred = clf.fit_predict(test_x)
+    print(y_pred.shape)
+    acc = accuracy_score(test_y,y_pred)
+    fpr, tpr, thersholds = roc_curve(test_y,y_pred)
     roc_auc = auc(fpr, tpr)
-    print(y_train_pred)
-    print(roc_auc)
+    prec, recall, thersholds2 = precision_recall_curve(test_y,y_pred)
+    prc_auc = auc(recall, prec)
+    print(y_pred)
+    print('acc: ',acc)
+    print('roc_auc: ',roc_auc)
+    print('prc_auc: ',prc_auc)
 
 #使用dump()将数据序列化到文件中
-fw = open(path+'/SOTA/kmeans.txt','wb')
+fw = open(path+'/kmeans.txt','wb')
 # Pickle dictionary using protocol 0.
 pickle.dump(clf, fw)
 fw.close()
 
-y_val_pred = clf.predict(val_x)
-fpr, tpr, thersholds = roc_curve(val_y,y_val_pred)
-roc_auc_val = auc(fpr, tpr)
-print(y_val_pred)
-print(roc_auc_val)
+'''
+ k-means best results:
+[0 0 0 0 0 0 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 0 0 0 0 0
+ 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0
+ 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 1 1 1 1 0 1 1 1 0 0 0 0 0
+ 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 0 1 0 0 1 1 1 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0
+ 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 1]
+acc:  0.5566502463054187
+roc_auc:  0.5561224489795918
+prc_auc:  0.6822660098522167
+'''
