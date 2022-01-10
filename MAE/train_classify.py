@@ -121,7 +121,7 @@ with torch.no_grad():
         logits = model(img)
         predicts+=(logits.argmax(dim=-1)).tolist()
         labels+=label.tolist()
-    acc,f1,auc_score = measure(torch.tensor(predicts),torch.tensor(labels))
+    acc,roc_score,prc_score = measure(torch.tensor(predicts),torch.tensor(labels))
 
-print(f'Test set:acc:{acc},f1_score:{f1},auc_score:{auc_score}')
+print(f'Test set:acc:{acc},roc_score:{roc_score},prc_score:{prc_score}')
     

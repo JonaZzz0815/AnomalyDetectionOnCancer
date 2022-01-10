@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-01-03 15:38:00
-LastEditTime: 2022-01-09 11:24:06
+LastEditTime: 2022-01-09 20:30:22
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: /AnomalyDetectionOnCancer/MAE/train.py
@@ -16,26 +16,40 @@ from sklearn.metrics import f1_score, auc
 
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.transforms import ToTensor, Compose, Normalize
+from sklearn.metrics import f1_score, auc,roc_curve,precision_recall_curve
+
 from tqdm import tqdm
 
 from Data import *
+from utils import measure
 from model import *
 from utils import setup_seed
-def CalAcc(losses,labels):
+critical_t = [3.39,3.174,2.871,2.626,2.334]
+def FindThreshold(losses,labels):
     lb = min(losses)
     hb = max(losses)
     max_acc = 0
-    max_f1 = 0
-    max_auc = 0
+    best_t = lb
     for t in torch.arange(lb,hb,0.001):
         given_label = losses < t
         acc = (given_label == labels).sum() / float(len (labels))
         if (acc > max_acc):
             max_acc = acc
-            max_f1 = f1_score(labels,given_label)
-            max_auc = auc(labels,given_label)
+            best_t = t
+    return best_t
+
+def CalAcc(losses,labels):
+    t = FindThreshold(losses,labels)
+    given_label = (losses < t)
+    max_acc = (given_label == labels).sum() / float(len (labels))
+    fpr, tpr, _ = roc_curve(labels,given_label)
+    roc_score= auc(fpr, tpr)
+    prec, recall, _ = precision_recall_curve(labels,given_label)
+    prc_score = auc(recall, prec)
     
-    return max_acc,max_f1,max_auc
+    return max_acc,roc_score,prc_score
+
+    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=42)
@@ -63,10 +77,9 @@ if __name__ == '__main__':
     type_dataset = args.pretrain 
 
     train_dataset = GetTrainSet(path,type_dataset)
+    val_dataset = GetValSet(path,type_dataset)
     test_dataset = GetTestSet(path)
 
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, load_batch_size, shuffle=True, num_workers=4)
-    val_dataloader = torch.utils.data.DataLoader(test_dataset, load_batch_size, shuffle=False, num_workers=4)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     if args.pretrained_model_path is not None:
@@ -87,11 +100,22 @@ if __name__ == '__main__':
     best_val_acc = 0
     step_count = 0
     optim.zero_grad()
-    
+    # training 
+    #take val_set as train_set
         
+    ori_labels=np.asarray([val_dataset[i][1] for i in range(len(val_dataset))])
+    ori_labels = torch.tensor(ori_labels)
+    train_img = torch.stack([val_dataset[i][0] for i in range(len(val_dataset))])
+    img = train_img.to(device)
+    predicted_img, mask = model(img)
+    predicted_img = predicted_img * mask + img * (1 - mask)
+    loss1 = (predicted_img - img) ** 2 * mask / 0.75
+    loss = torch.tensor([torch.mean(torch.pow(item,2)) for item in loss1])
+
+    
     with torch.no_grad():
-        losses = []
-        acces = []
+    # testing 
+        
         ori_labels=np.asarray([test_dataset[i][1] for i in range(len(test_dataset))])
         ori_labels = torch.tensor(ori_labels)
         test_img = torch.stack([test_dataset[i][0] for i in range(len(test_dataset))])
@@ -101,8 +125,9 @@ if __name__ == '__main__':
         loss1 = (predicted_img - img) ** 2 * mask / 0.75
         loss = torch.tensor([torch.mean(torch.pow(item,2)) for item in loss1])
         # print(loss)
-        acc,f1,auc_score = CalAcc(loss,ori_labels)
-        print(f'Acc is {acc},F1_score:{f1},auc:{auc_score}')
+        
+        acc,roc_score,prc_score = CalAcc(loss,ori_labels)
+        print(f'Acc is {acc},roc_score:{roc_score},prc_score:{prc_score}')
     
 markers = ['o', '^']
 colors = ['dodgerblue', 'coral']
@@ -115,20 +140,19 @@ mse_df = pd.DataFrame()
 mse_df['Class'] = ori_labels
 mse_df['MSE'] = loss
 
-plt.figure(figsize=(14, 5))
-plt.subplot(1,1,1)
+plt.figure(figsize=(8, 5))
+plt.plot()
 for flag in [1, 0]:
     temp = mse_df[mse_df['Class'] == flag]
-    plt.scatter(temp.index, 
+    plt.scatter(temp.index%10, 
                 temp['MSE'],  
                 alpha=0.7, 
                 marker=markers[flag], 
                 c=colors[flag], 
                 label=labels[flag])
-plt.title('Reconstruction MSE')
-plt.legend(loc=[1, 0], fontsize=12)
+plt.legend(loc=[1, 0], fontsize=6)
 plt.ylabel('Reconstruction MSE'); plt.xlabel('Index')
-plt.subplot(1,1,1)
+plt.plot()
 plt.show()
 
         
