@@ -14,19 +14,19 @@ Our Method:
 2. Dropout / random ensemble. 
     1. dropout refer to: https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf
 3. (M)AE+k-means. MAE :https://github.com/pengzhiliang/MAE-pytorch
-4. pre-training. 
-5. Downstream Task: anomaly detection by reconstruction or two-classes classification
-6. loss=reconstruction loss+ cluster loss（k-means). 
+4. pre-training.  
+5. Downstream Task: anomaly detection by reconstruction or two-classes classification. 
+6. loss=reconstruction loss+ cluster loss（k-means).  
 
 ### How to run
 cd MAE  
 python pretain.py  
 python xxtrain.py  
 ### Models
-pretrain on NonCOVID with classifier:https://drive.google.com/file/d/1jvxqTLnEE1ITJNSCrl1rBy38Zc1WWC43/view?usp=sharing
-pretrain on NonCOVID with Reconstruction:https://drive.google.com/file/d/1_bMWvhYBSuety2z41PXDyhQNRYdXtStj/view?usp=sharing
-pretrain on COVID with classifier:https://drive.google.com/file/d/1fzyclnPndkM-b_zJZfnnb5gAd3-e5nVL/view?usp=sharing
-pretrain on COVID with Reconstruction:https://drive.google.com/file/d/1UI1JAO5jxAHx4Hv5GipIbBHEDJWJXZDZ/view?usp=sharing
+pretrain on NonCOVID with classifier:https://drive.google.com/file/d/1jvxqTLnEE1ITJNSCrl1rBy38Zc1WWC43/view?usp=sharing 
+pretrain on NonCOVID with Reconstruction:https://drive.google.com/file/d/1_bMWvhYBSuety2z41PXDyhQNRYdXtStj/view?usp=sharing 
+pretrain on COVID with classifier:https://drive.google.com/file/d/1fzyclnPndkM-b_zJZfnnb5gAd3-e5nVL/view?usp=sharing 
+pretrain on COVID with Reconstruction:https://drive.google.com/file/d/1UI1JAO5jxAHx4Hv5GipIbBHEDJWJXZDZ/view?usp=sharing 
 
 ### other methods' implementation:
 see in SOTA file
