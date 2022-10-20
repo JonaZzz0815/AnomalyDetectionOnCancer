@@ -1,0 +1,13 @@
+torchvision
+torch
+numpy
+pandas
+pickle
+scipy
+PIL
+pyod
+cv2
+matplotlib
+
+
+# add specific visions
